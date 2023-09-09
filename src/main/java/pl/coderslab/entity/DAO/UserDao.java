@@ -11,7 +11,7 @@ public class UserDao {
     private static final String CREATE_USER_QUERY = "INSERT INTO users(id, username,email, password) VALUE (DEFAULT,?,?,?)";
     private static final String READ_USER_QUERY = "SELECT * FROM users Where id = ?";
     private static final String UPDATE_USER_QUERY = "UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?";
-    private static final String q4 = "";
+    private static final String DELETE_USER_QUERY = "DELETE from users where id = ?";
     private static final String q5 = "";
 
 
@@ -65,6 +65,16 @@ public class UserDao {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+    }
+
+    public void delete(int userId) {
+        try (PreparedStatement statement = DbUtil.getConnection().prepareStatement(DELETE_USER_QUERY)) {
+            statement.setInt(1, userId);
+            statement.executeUpdate();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
     }
 
 
