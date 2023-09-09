@@ -5,6 +5,7 @@ import pl.coderslab.DbUtil;
 import pl.coderslab.entity.User;
 
 import java.sql.*;
+import java.util.Arrays;
 
 public class UserDao {
 
@@ -12,7 +13,7 @@ public class UserDao {
     private static final String READ_USER_QUERY = "SELECT * FROM users Where id = ?";
     private static final String UPDATE_USER_QUERY = "UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?";
     private static final String DELETE_USER_QUERY = "DELETE from users where id = ?";
-    private static final String q5 = "";
+    private static final String FINDALL_USERS_QUERY = "SELECT * FROM users";
 
 
     public User create(User user) {
@@ -77,9 +78,38 @@ public class UserDao {
 
     }
 
+    public User[] findAll() {
+        try (PreparedStatement statement = DbUtil.getConnection().prepareStatement(FINDALL_USERS_QUERY)) {
+            User[] usersArray = new User[0];
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setUserName(resultSet.getString("username"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPassword(resultSet.getString("password"));
+                usersArray = addToArray(user, usersArray);
+            }
+            return usersArray;
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return null;
+
+        }
+    }
+
 
     public String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
+
+    private User[] addToArray(User u, User[] users) {
+        User[] tmpUsers = Arrays.copyOf(users, users.length + 1); // Tworzymy kopię tablicy powiększoną o 1.
+        tmpUsers[users.length] = u; // Dodajemy obiekt na ostatniej pozycji.
+        return tmpUsers; // Zwracamy nową tablicę.
+    }
+
 
 }
