@@ -14,5 +14,16 @@ public class MainDao {
 
         //   userDao1.create(user1);
         //   User read = userDao1.read(2);
+
+        UserDao userDao2 = new UserDao();
+
+        User user2 = userDao2.read(4);
+        user2.setUserName("JanNowak-Zmieniony");
+        user2.setEmail("j.nowak@email.test - Zmieniony");
+        user2.setUserName("nowak1990Zmieniony");
+
+        userDao2.update(user2);
+
+
     }
 }

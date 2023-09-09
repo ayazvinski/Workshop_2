@@ -10,8 +10,9 @@ public class UserDao {
 
     private static final String CREATE_USER_QUERY = "INSERT INTO users(id, username,email, password) VALUE (DEFAULT,?,?,?)";
     private static final String READ_USER_QUERY = "SELECT * FROM users Where id = ?";
-    private static final String q3 = "";
+    private static final String UPDATE_USER_QUERY = "UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?";
     private static final String q4 = "";
+    private static final String q5 = "";
 
 
     public User create(User user) {
@@ -54,10 +55,21 @@ public class UserDao {
         return null;
     }
 
+    public void update(User user) {
+        try (PreparedStatement statement = DbUtil.getConnection().prepareStatement(UPDATE_USER_QUERY)) {
+            statement.setString(1, user.getUserName());
+            statement.setString(2, user.getEmail());
+            statement.setString(3, hashPassword(user.getPassword()));
+            statement.setInt(4, user.getId());
+            statement.executeUpdate();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
 
     public String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
-
 
 }
